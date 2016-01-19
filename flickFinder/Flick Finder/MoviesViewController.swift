@@ -8,12 +8,17 @@
 
 import UIKit
 import AFNetworking
+import EZLoadingActivity
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 	
 	@IBOutlet weak var tableView: UITableView!
-	
+
 	var movies: [NSDictionary]?
+
+	var failedCount = 0
+	
+	var refreshControl : UIRefreshControl!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -21,32 +26,21 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		tableView.dataSource = self
 		tableView.delegate = self
 		
+		self.refreshControl = UIRefreshControl()
+		self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to Refresh")
+		self.refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		self.tableView.addSubview(refreshControl)
 		
-		// Do any additional setup after loading the view.
+		EZLoadingActivity.show("Loading...", disableUI: false)
 		
-		let apiKey = "f90b40fed338ec99e894fc21438657ba"
-		let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
-		let request = NSURLRequest(URL: url!)
-		let session = NSURLSession(
-			configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-			delegate:nil,
-			delegateQueue:NSOperationQueue.mainQueue()
-		)
+		apiDataLoad()
 		
-		let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
-			completionHandler: { (dataOrNil, response, error) in
-    if let data = dataOrNil {
-			if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
-				data, options:[]) as? NSDictionary {
-					NSLog("response: \(responseDictionary)")
-					
-					self.movies = responseDictionary["results"] as? [NSDictionary]
-					self.tableView.reloadData()
-			}
-    }
-		});
-		task.resume()
-
+	}
+	
+	override func viewDidAppear(animated: Bool) {
+		
+		EZLoadingActivity.showWithDelay("Loading...", disableUI: true, seconds: 2)
+		
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -91,6 +85,52 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		return cell
 	}
 	
+	func apiDataLoad()
+	{
+		// themoviedb.org API setup
+
+		let apiKey = "f90b40fed338ec99e894fc21438657ba"
+		let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+		let request = NSURLRequest(URL: url!)
+		let session = NSURLSession(
+			configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+			delegate:nil,
+			delegateQueue:NSOperationQueue.mainQueue()
+		)
+
+
+		let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
+			completionHandler: { (dataOrNil, response, error) in
+				if let data = dataOrNil {
+					if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
+						data, options:[]) as? NSDictionary {
+							NSLog("response: \(responseDictionary)")
+							
+							self.movies = responseDictionary["results"] as? [NSDictionary]
+							EZLoadingActivity.hide()
+							self.tableView.reloadData()
+					}
+				}
+				else
+				{
+					self.failedCount++
+					print("failed \(self.failedCount)")
+				}
+		});
+		task.resume()
+
+		if failedCount > 1000
+		{
+			EZLoadingActivity.hide(success: false, animated: true)
+		}
+	}
+	
+	func refresh()
+	{
+		apiDataLoad()
+		refreshControl.endRefreshing()
+	}
+
 	
 	/*
 	// MARK: - Navigation
