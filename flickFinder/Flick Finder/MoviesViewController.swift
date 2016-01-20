@@ -30,17 +30,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to Refresh")
 		self.refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
 		self.tableView.addSubview(refreshControl)
-		
-		EZLoadingActivity.show("Loading...", disableUI: false)
-		
-		apiDataLoad()
-		
+
 	}
 	
 	override func viewDidAppear(animated: Bool) {
 		
-		EZLoadingActivity.showWithDelay("Loading...", disableUI: true, seconds: 2)
+		EZLoadingActivity.showWithDelay("Loading...", disableUI: true, seconds: 15)
 		
+//		EZLoadingActivity.show("Loading...", disableUI: false)
+		
+		apiDataLoad()
+
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -79,7 +79,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		cell.overviewLabel.text = overview
 		cell.posterView.setImageWithURL(imageURL!)
 
-		
 		print("row \(indexPath.row)")
 		
 		return cell
@@ -121,12 +120,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
 		if failedCount > 1000
 		{
-			EZLoadingActivity.hide(success: false, animated: true)
+			EZLoadingActivity.hide(success: false, animated: false)
 		}
 	}
 	
 	func refresh()
 	{
+		EZLoadingActivity.showWithDelay("Loading...", disableUI: true, seconds: 15)
+
 		apiDataLoad()
 		refreshControl.endRefreshing()
 	}
