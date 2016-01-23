@@ -150,13 +150,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		cell.posterView.setImageWithURLRequest(
 			posterRequest,
 			placeholderImage: nil,
-			success: { (posterRequest, imageResponse, image) -> Void in
+			success: { (posterRequest, posterResponse, image) -> Void in
 				
 				// imageResponse will be nil if the image is cached
-				if imageResponse != nil {
+				if posterResponse != nil {
 					print("Image was NOT cached, fade in image")
 					cell.posterView.alpha = 0.0
 					cell.posterView.image = image
+					cell.posterView.contentMode = .ScaleAspectFit
 					UIView.animateWithDuration(0.3, animations: { () -> Void in
 						cell.posterView.alpha = 1.0
 					})
@@ -165,9 +166,13 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 					cell.posterView.image = image
 				}
 			},
-			failure: { (imageRequest, imageResponse, error) -> Void in
+			failure: { (posterRequest, posterResponse, error) -> Void in
 				// do something for the failure condition
 				print("image failed")
+				
+			cell.posterView.image = UIImage(named: "posterFail.png")
+			cell.posterView.contentMode = .ScaleAspectFit
+
 		})
 	}
 	
