@@ -2,7 +2,7 @@
 
 **Flick Finder** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **3** hours spent in total
+Time spent: **5** hours spent in total
 
 ## User Stories
 
@@ -12,14 +12,14 @@ The following **required** functionality is complete:
 - [x] Poster images are loaded using the UIImageView category in the AFNetworking library.
 - [x] User sees a loading state while waiting for the movies API.
 - [x] User can pull to refresh the movie list.
-- [ ] User sees an error message when there's a networking error.  
 
 The following **optional** features are implemented:
 
+- [x] All images fade in as they are loading.
+- [x] User can search for a movie.
 - [ ] Movies are displayed using a CollectionView instead of a TableView.
 - [ ] User can select from a tab bar for either "Now Playing" or "Top Rated" movies.
-- [ ] User can search for a movie.
-- [ ] All images fade in as they are loading.
+- [ ] User sees an error message when there's a networking error.  
 - [ ] Customize the UI.
 
 The following **additional** features are implemented:
@@ -30,13 +30,14 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/WildElf/flicks/blob/master/flicks.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='flicks.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+The EZLoading pod seems to be unreliable, particularly with it's delay settings not 
+respecting the "seconds" definition.
 
 ## License
 
