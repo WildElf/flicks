@@ -24,7 +24,8 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [x] Error image loads if poster image fails
+- [x] Images resize to fit imageView if larger
 
 ## Video Walkthrough
 
@@ -38,6 +39,10 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 The EZLoading pod seems to be unreliable, particularly with it's delay settings not 
 respecting the "seconds" definition.
+
+So far, unable to create a collection view that works (working in another project), 
+get the broken outlet error, without any outlets broken (and starting from scratch 
+multiple times).
 
 ## License
 
