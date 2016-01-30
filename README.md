@@ -48,7 +48,7 @@ multiple times).
 
 **Flick Finder** is a movies app displaying box office and top rental DVDs using [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **0** hours spent in total
+Time spent: **12** hours spent in total (week1 inclusive)
 
 ## User Stories
 
