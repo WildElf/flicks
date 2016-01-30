@@ -13,8 +13,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 
-
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+		
+		window = UIWindow(frame: UIScreen.mainScreen().bounds)
+		
+		let storyboad = UIStoryboard(name: "Main", bundle: nil)
+		
+		let nowPlayingNavigationController = storyboad.instantiateViewControllerWithIdentifier("MoviesNavigationController") as! UINavigationController
+		let nowPlayingViewController = nowPlayingNavigationController.topViewController as! MoviesViewController
+		nowPlayingViewController.endPoint = "now_playing"
+		nowPlayingViewController.title = "Now Playing"
+		nowPlayingViewController.tabBarItem.image = UIImage(named: "clapboard")
+		
+		
+		let topRatedNavigationController = storyboad.instantiateViewControllerWithIdentifier("MoviesNavigationController") as! UINavigationController
+		let topRatedViewController = topRatedNavigationController.topViewController as! MoviesViewController
+		topRatedViewController.endPoint = "top_rated"
+		topRatedViewController.title = "Top Rated"
+		topRatedViewController.tabBarItem.image = UIImage(named: "star")
+		
+		let upcomingNavigationController = storyboad.instantiateViewControllerWithIdentifier("MoviesNavigationController") as! UINavigationController
+		let upcomingViewController = upcomingNavigationController.topViewController as! MoviesViewController
+		upcomingViewController.endPoint = "upcoming"
+		upcomingViewController.title = "Upcoming"
+		upcomingViewController.tabBarItem.image = UIImage(named: "projector")
+
+
+		let popularNavigationController = storyboad.instantiateViewControllerWithIdentifier("MoviesNavigationController") as! UINavigationController
+		let popularViewController = popularNavigationController.topViewController as! MoviesViewController
+		popularViewController.endPoint = "popular"
+		popularViewController.title = "Popular"
+		popularViewController.tabBarItem.image = UIImage(named: "heart")
+
+		let tabBarController = UITabBarController()
+
+		tabBarController.viewControllers = [
+			nowPlayingNavigationController,
+			topRatedNavigationController,
+			upcomingNavigationController,
+			popularNavigationController ]
+		
+		window?.rootViewController = tabBarController
+		window?.makeKeyAndVisible()
+		
 		// Override point for customization after application launch.
 		return true
 	}

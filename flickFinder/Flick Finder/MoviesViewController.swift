@@ -18,6 +18,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 	
 	var movies: [NSDictionary]?
 	var filteredMovies: [NSDictionary]?
+	var endPoint: String?
 	
 	var failedCount = 0
 	
@@ -31,11 +32,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		
 		searchBar.delegate = self
 		
-		self.refreshControl = UIRefreshControl()
-		self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to Refresh")
-		self.refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-		self.tableView.addSubview(refreshControl)
-		
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -46,7 +42,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 	override func viewDidAppear(animated: Bool) {
 		
 		//		EZLoadingActivity.show("Loading...", disableUI: false)
-		
+	
+		self.refreshControl = UIRefreshControl()
+		self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to Refresh")
+		self.refreshControl.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+		self.tableView.addSubview(refreshControl)
+
 		apiDataLoad()
 		
 	}
@@ -69,15 +70,21 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 		let movie = self.filteredMovies![indexPath.row]
 		let title = movie["title"] as! String
 		let overview = movie["overview"] as! String
-		let posterPath = movie["poster_path"] as! String
-		
-		let baseURL = "http://image.tmdb.org/t/p/w500"
-		let imageURL = NSURL(string: baseURL + posterPath)
-		
+
 		cell.titleLabel?.text = title
 		cell.overviewLabel?.text = overview
-		imageFadeIn(cell, url: imageURL!)
-		//		cell.posterView?.setImageWithURL(imageURL!)
+		
+		let selectedBackground = UIView()
+		selectedBackground.backgroundColor = UIColor.blueColor()
+		cell.selectedBackgroundView = UIView()
+		
+		let baseURL = "http://image.tmdb.org/t/p/w500"
+		if let posterPath = movie["poster_path"] as? String
+		{
+			let imageURL = NSURL(string: baseURL + posterPath)
+			imageFadeIn(cell, url: imageURL!)
+			//		cell.posterView?.setImageWithURL(imageURL!)
+		}
 		
 		print("row \(indexPath.row)")
 		
@@ -95,10 +102,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 	func apiDataLoad()
 	{
 		// themoviedb.org API setup
-		let endPoint = "now_playing"
 		
 		let apiKey = "f90b40fed338ec99e894fc21438657ba"
-		let url = NSURL(string:"https://api.themoviedb.org/3/movie/\(endPoint)?api_key=\(apiKey)")
+		print("https://api.themoviedb.org/3/movie/\(endPoint)?api_key=\(apiKey)")
+		let url = NSURL(string:"https://api.themoviedb.org/3/movie/\(endPoint!)?api_key=\(apiKey)")
 		let request = NSURLRequest(URL: url!)
 		let session = NSURLSession(
 			configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
@@ -170,21 +177,30 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 				// do something for the failure condition
 				print("image failed")
 				
-			cell.posterView.image = UIImage(named: "posterFail.png")
-			cell.posterView.contentMode = .ScaleAspectFit
-
+				cell.posterView.image = UIImage(named: "posterFail.png")
+				cell.posterView.contentMode = .ScaleAspectFit
+				
 		})
 	}
 	
 	
-	/*
 	// MARK: - Navigation
 	
 	// In a storyboard-based application, you will often want to do a little preparation before navigation
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-	// Get the new view controller using segue.destinationViewController.
-	// Pass the selected object to the new view controller.
+		
+		let cell = sender as! UITableViewCell
+		let indexPath = tableView.indexPathForCell(cell)
+		let movie = movies![indexPath!.row]
+		
+		let details = segue.destinationViewController as! DetailViewController
+		details.movie = movie
+		
+		
+		print("segue called from movies view")
+		// Get the new view controller using segue.destinationViewController.
+		// Pass the selected object to the new view controller.
 	}
-	*/
+	
 	
 }
